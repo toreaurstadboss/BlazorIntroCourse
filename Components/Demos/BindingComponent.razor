@@ -1,0 +1,22 @@
+@using System.Linq.Expressions
+<h3>BindingComponent</h3>
+
+<button @onclick="UpdateValueAsync">Update me</button>
+
+@code {
+
+    [Parameter]
+    public string Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<string>> ValueExpression { get; set; }
+
+    private async Task UpdateValueAsync(){
+        Value = DateTime.Now.ToString();
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+}

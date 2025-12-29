@@ -1,0 +1,11 @@
+<MyButton AdditionalAttributes="@buttonAttributes" />
+@page "/attributesdemo"
+
+@code {
+    private Dictionary<string, object> buttonAttributes = new()
+    {
+        { "style", "margin: 10px;background-color:pink;color:black;font-family: 'Comic Sans MS'" },
+        { "title", "Click me to perform an action" }, 
+//{ "disabled", true }
+    };
+}

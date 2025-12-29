@@ -1,0 +1,16 @@
+<h3>BindingComponent</h3>
+@page "/bindingcomponentdemo"
+<BindingComponent Value="@bindingComponentValue1" /> @bindingComponentValue1 <br />
+<BindingComponent @bind-Value="@bindingComponentValue2" /> @bindingComponentValue2 <br />
+<BindingComponent Value="@bindingComponentValue3" ValueChanged="ValueChangedMethod" /> @bindingComponentValue3 <br />
+
+@code {
+    string bindingComponentValue1 = "Before update 1"; 
+    string bindingComponentValue2 = "Before update 2";
+    string bindingComponentValue3 = "Before update 3";
+
+    private void ValueChangedMethod(string newValue)
+    {
+        bindingComponentValue3 = newValue;
+    }
+}

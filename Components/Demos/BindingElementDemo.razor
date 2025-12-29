@@ -1,0 +1,18 @@
+<h3>BindingDemo</h3>
+
+@page "/bindingelementdemo"
+
+<input type="text" @bind="@inputValue" /> @inputValue <br />
+<input type="text" @bind-value="@inputValue2" /> @inputValue2 <br />
+<input type="text" @bind-value="@inputValue3" @bind-value:event="oninput" /> @inputValue3 <br />
+<input type="text" @bind-value="@inputValue4" @bind-value:after="@(() => inputValue4 = inputValue4 + " I was updated! ")" /> @inputValue4
+<input type="text" @bind-value:set="@((newvalue) => inputValue5 = newvalue))" @bind-value:get="@inputValue5" /> @inputValue5
+
+@code {
+
+    private string inputValue = "Initial value 1";
+    private string inputValue2 = "Initial value 2";
+    private string inputValue3 = "Initial value 3";
+    private string inputValue4 = "Initial value 4";
+    private string inputValue5 = "Initial value 5";
+}

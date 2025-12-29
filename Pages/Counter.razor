@@ -1,0 +1,32 @@
+﻿@page "/counter"
+@inject IMyService MyService
+@* @rendermode InteractiveServer *@
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<br /><br />
+
+<button @onclick="@(() => MyService.AddName($"Member {MyService.Names.Count + 1}"))" class="btn btn-primary m-2">Add a new member</button>
+
+<h3>Current Members</h3>
+<ul>
+    @foreach (var name in MyService.Names)
+    {
+        <li>@name</li>
+    }
+</ul>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

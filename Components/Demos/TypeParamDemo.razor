@@ -1,0 +1,13 @@
+@page "/typeparamdemo"
+
+<h3>TypeParameter Demo</h3>
+
+<MyList TItem="string" Items="@data" />
+
+<MyList Items="@data2" />
+
+
+@code {
+    private List<string> data = new () { "Apple", "Banana", "Cherry" };
+    private List<double> data2 = new List<double> () { 1, 3, 11, 1.3, 4.145 };
+}
