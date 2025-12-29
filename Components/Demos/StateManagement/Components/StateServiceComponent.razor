@@ -1,0 +1,32 @@
+﻿@using DependencyInjectionDemo.Components.Demos.StateManagement.Services
+@implements IDisposable
+
+@inject StateService StateService
+
+<ul>
+    @foreach (var message in StateService.GetMessages())
+    {
+        <li>@message</li>
+    }
+</ul>
+
+<button class="btn btn-primary" @onclick="AddMessage">Add Message</button>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        StateService.OnChange += () => InvokeAsync(StateHasChanged);
+    }
+
+    private void AddMessage()
+    {
+        StateService.AddMessage($"New message at {DateTime.Now}");
+    }
+
+    public void Dispose()
+    {
+        StateService.OnChange -= StateHasChanged;
+    }
+
+}
