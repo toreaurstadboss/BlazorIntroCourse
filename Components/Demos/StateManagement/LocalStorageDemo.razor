@@ -1,0 +1,60 @@
+﻿@page "/LocalStorageDemo"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
+
+@inject ProtectedLocalStorage LocalStorage
+
+@inject ProtectedSessionStorage SessionStorage
+
+
+<h3>LocalStorageDemo</h3>
+
+<marquee>Fetching some data from ProtectedLocalStorage</marquee>
+@name
+
+
+<h3>SessionStorageDemo</h3>
+
+<marquee>Fetching some data from ProtectedSessionStorage</marquee>
+
+<form>
+    <div>
+        <label>Key: <input type="text" @bind-value="SessionStorageKey" /></label>
+    </div>
+    <div>
+        <label>Value: <input type="text" @bind-value="SessionStorageValue" /></label>
+    </div>
+    <div>
+        <button type="button" @onclick="StoreKeyAsync">Store Key</button>
+    </div>
+</form>
+
+
+
+@code {
+    string name = "Nothing is set yet";
+
+    public string? SessionStorageKey { get; set; }
+    public string? SessionStorageValue { get; set; }
+
+    public async Task StoreKeyAsync()
+    {
+        if (string.IsNullOrWhiteSpace(SessionStorageKey) || string.IsNullOrWhiteSpace(SessionStorageValue))
+        {
+            return;
+        }
+        await SessionStorage.SetAsync(SessionStorageKey!, SessionStorageValue!);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await LocalStorage.SetAsync("name", "Sideshow Bob " + DateTime.Now.ToString());
+        var storedName = (await LocalStorage.GetAsync<string>("name"));
+        if (storedName.Success && storedName.Value != name)
+        {
+            name = storedName.Value;
+            StateHasChanged();
+        }
+    }
+
+}
