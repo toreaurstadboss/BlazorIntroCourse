@@ -1,0 +1,24 @@
+﻿@page "/NavigationManagerDemo"
+@inject NavigationManager navigationManager
+
+<h3>NavigationManagerDemo</h3>
+
+<p>
+The current url base uri is: @navigationManager.BaseUri <br />
+The current url uri is: @navigationManager.Uri
+<br />
+The current time is: @DateTime.Now.ToString("hh:mm:ss.fff")
+</p>
+
+<br />
+<button class="btn btn-primary" @onclick="RefreshPage">Reload the page via NavigationManager</button>
+
+@code {
+
+    void RefreshPage()
+    {
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+    }
+
+
+}
