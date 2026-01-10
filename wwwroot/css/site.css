@@ -12,6 +12,12 @@ a, .btn-link {
     color: #0071c1;
 }
 
+.myNavLink {
+    font-weight: 400;
+    color: dodgerblue;
+    font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+}
+
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;

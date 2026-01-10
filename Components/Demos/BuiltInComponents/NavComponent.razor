@@ -1,0 +1,15 @@
+﻿@page "/NavLinkDemo"
+
+<h3>NavComponent</h3>
+
+<div>
+    <nav class="flex-column" style="background-color:lightyellow">
+        <NavLink Match="NavLinkMatch.All" href="/NavLinkDemo">This page</NavLink>
+        <NavLink ActiveClass="nav-link" href="/NavLinkDemos">Other page</NavLink>
+        <NavLink ActiveClass="nav-link" Match="NavLinkMatch.All" href="/NavLinkDemo">This page</NavLink>
+    </nav>
+</div>
+
+@code {
+
+}
