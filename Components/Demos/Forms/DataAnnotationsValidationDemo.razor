@@ -22,11 +22,14 @@
 </EditForm> *@
 
 <EditForm EditContext="@heroEditContext" OnInvalidSubmit="@OnInvalidSubmit"
-          OnValidSubmit="@OnValidSubmit" class="p-4 border rounded shadow-sm bg-light">
+          OnValidSubmit="@OnValidSubmit" FormName="SuperHeroForm" class="p-4 border rounded shadow-sm bg-light">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <SomeAcmeInputText @bind-Value="@model.Name" Label="Name" ></SomeAcmeInputText>
+
+    <SomeAcmeInputText @bind-Value="@model.SpecialAbility" Label="Special ability" ></SomeAcmeInputText>
+
 
 @* 
     <div class="form-group">
@@ -35,12 +38,12 @@
         <ValidationMessage For="@(() => model.Name)" />
     </div> *@
 
-    <div class="form-group">
+@*     <div class="form-group">
         <label class="form-label" for="SpecialAbility">Special ability:</label>
         <InputText class="form-control" @bind-Value="@model.SpecialAbility" />
         <ValidationMessage For="@(() => model.SpecialAbility)" />
     </div>
-
+ *@
     <div class="form-group">
         <label class="form-label" for="Score">Score:</label>
         <InputNumber class="form-control w-25" @bind-Value="@model.Score" />
@@ -72,8 +75,10 @@
 
 
     <br />
-    <button type="submit" class="btn btn-primary w-20">Submit</button>
+    <button type="submit" class="btn btn-success w-20">Submit</button>
 </EditForm>
+
+@message
 
 @code {
 
@@ -88,6 +93,8 @@
             "Dark Horse"
         };
     }
+
+    private string message = "";
 
     ComicSelection comicSelection = new ComicSelection();
 
@@ -131,6 +138,10 @@
         Console.WriteLine($"IsValid field {nameof(Superhero.Name)}: {editContext.IsValid(fieldIdentifier)}");
         Console.WriteLine($"IsModeified field {nameof(Superhero.Name)}: {editContext.IsModified(fieldIdentifier)}");
         editContext.MarkAsUnmodified();
+
+        // Save the data
+        message = $"You just submitted {model.Name}, who has ability {model.SpecialAbility}";
+
     }
 
 
