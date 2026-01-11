@@ -13,6 +13,11 @@ namespace DependencyInjectionDemo.Components.Demos.BuiltInComponents.Sampledata
         [Required]
         public string SpecialAbility { get; set; } = string.Empty;
 
+        [Range(0, 100)]
+        public int? Score { get; set; }
+
+        public DateTime? CreationDate { get; set; }
+
     }
 
 }

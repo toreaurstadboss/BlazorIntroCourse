@@ -37,6 +37,26 @@
         <InputText class="form-control" @bind-Value="@model.SpecialAbility" />
         <ValidationMessage For="@(() => model.SpecialAbility)" />
     </div>
+
+    <div class="form-group">
+        <label class="form-label" for="Score">Score:</label>
+        <InputNumber class="form-control w-25" @bind-Value="@model.Score" />
+        <ValidationMessage For="@(() => model.Score)" />
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="CreationDate">CreationDate:</label>
+        <InputDate class="form-control w-25" @bind-Value="@model.CreationDate" />
+        <ValidationMessage For="@(() => model.CreationDate)" />
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="CreationDate">CreationDate:</label>
+        <InputFile class="form-control w-25" multiple OnChange="@OnInputFileChanged"  />
+        <ValidationMessage For="@(() => model.CreationDate)" />
+    </div>
+
+
     <br />
     <button type="submit" class="btn btn-primary w-20">Submit</button>
 </EditForm>
@@ -50,6 +70,16 @@
     };
 
     private EditContext? heroEditContext;
+
+    private void OnInputFileChanged(InputFileChangeEventArgs eventArgs)
+    {
+        foreach (var f in eventArgs.GetMultipleFiles())
+        {
+            Console.WriteLine($"File name: {f.Name}");
+            Console.WriteLine($"File size: {f.Size}");
+            Console.WriteLine($"File content type: {f.ContentType}");           
+        }
+    }
 
     protected override void OnInitialized()
     {
