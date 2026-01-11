@@ -1,0 +1,22 @@
+﻿@page "/ErrorBoundaryComponentDemo"
+<h3>ErrorBoundaryComponentDemo</h3>
+
+<LoggingErrorBoundary Context="ex"> 
+    <ChildContent>
+        @(1 / zero)        
+    </ChildContent>
+    <ErrorContent>
+        <div class="blazor-error-boundary"></div>
+        <div style="color:red">
+            <p>Some specific formatting: @ex.Message <br />@ex.ToString()</p>
+        </div>
+    </ErrorContent>
+</LoggingErrorBoundary>
+
+
+@code {
+    int zero = 0;
+}
+
+
+

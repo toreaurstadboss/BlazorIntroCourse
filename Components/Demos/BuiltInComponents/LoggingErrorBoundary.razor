@@ -1,0 +1,34 @@
+﻿@inherits ErrorBoundary 
+
+<div>
+    @if (CurrentException is null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        @if (ErrorContent != null)
+        {
+            @ErrorContent(CurrentException)
+        }
+        else
+        {
+            <div class="blazor-error-boundary"></div>
+            <div style="color:red">
+                <p>@CurrentException.Message</p>
+        </div>
+        }
+        
+    }
+</div>
+
+@code {
+    [Inject] ILogger<LoggingErrorBoundary> Logger { get; set; } = default!;
+
+    protected override Task OnErrorAsync(Exception exception)
+    {
+        Logger.LogError(exception, "Unhandled exception in component");
+        return base.OnErrorAsync(exception);
+    }
+
+}
