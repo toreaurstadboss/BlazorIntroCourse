@@ -12,6 +12,23 @@ a, .btn-link {
     color: #0071c1;
 }
 
+
+.clear-btn {
+    background: transparent;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 6px 10px; /* Gir fin luft rundt ikonet */
+    margin-left: 6px; /* Litt avstand fra input */
+    font-size: 16px; /* Passer til Font Awesome ikon */
+    border-radius: 4px;
+}
+
+    .clear-btn:hover {
+        background-color: #f0f0f0; /* Lys bakgrunn ved hover */
+    }
+
+
 .myNavLink {
     font-weight: 400;
     color: dodgerblue;
@@ -25,7 +42,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {

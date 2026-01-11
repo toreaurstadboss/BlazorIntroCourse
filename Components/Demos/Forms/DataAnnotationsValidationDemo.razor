@@ -1,0 +1,148 @@
+﻿<h3>DataAnnotationsValidationDemo</h3>
+
+@page "/EditFormDemo"
+@using DependencyInjectionDemo.Components.Demos.BuiltInComponents.Sampledata
+
+@* <EditForm Model="@model">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <InputText @bind-Value="@model.Name" />
+        <ValidationMessage For="@(() => model.Name)" />
+    </div>
+
+    <div class="form-group">
+        <label for="SpecialAbility">Special ability:</label>
+        <InputText @bind-Value="@model.SpecialAbility" />
+        <ValidationMessage For="@(() => model.SpecialAbility)" />
+    </div>  
+
+</EditForm> *@
+
+<EditForm EditContext="@heroEditContext" OnInvalidSubmit="@OnInvalidSubmit"
+          OnValidSubmit="@OnValidSubmit" FormName="SuperHeroForm" class="p-4 border rounded shadow-sm bg-light">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <SomeAcmeInputText @bind-Value="@model.Name" Label="Name" ></SomeAcmeInputText>
+
+    <SomeAcmeInputText @bind-Value="@model.SpecialAbility" Label="Special ability" ></SomeAcmeInputText>
+
+
+@* 
+    <div class="form-group">
+        <label class="form-label" for="username">Username:</label>
+        <InputText class="form-control" @bind-Value="@model.Name" />
+        <ValidationMessage For="@(() => model.Name)" />
+    </div> *@
+
+@*     <div class="form-group">
+        <label class="form-label" for="SpecialAbility">Special ability:</label>
+        <InputText class="form-control" @bind-Value="@model.SpecialAbility" />
+        <ValidationMessage For="@(() => model.SpecialAbility)" />
+    </div>
+ *@
+    <div class="form-group">
+        <label class="form-label" for="Score">Score:</label>
+        <InputNumber class="form-control w-25" @bind-Value="@model.Score" />
+        <ValidationMessage For="@(() => model.Score)" />
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="CreationDate">CreationDate:</label>
+        <InputDate class="form-control w-25" @bind-Value="@model.CreationDate" />
+        <ValidationMessage For="@(() => model.CreationDate)" />
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="CreationDate">CreationDate:</label>
+        <InputFile class="form-control w-25" multiple OnChange="@OnInputFileChanged" />
+        <ValidationMessage For="@(() => model.CreationDate)" />
+    </div>
+
+    <div class="form-group">
+        <InputRadioGroup @bind-Value="@comicSelection.Selection">
+            <h3>Select your favorite comic universe:</h3>
+            @foreach (var universe in comicSelection.ComicUniverses)
+            {
+                  <InputRadio Value="@universe" /> @universe <br />         
+            }
+        </InputRadioGroup>
+
+    </div>
+
+
+    <br />
+    <button type="submit" class="btn btn-success w-20">Submit</button>
+</EditForm>
+
+@message
+
+@code {
+
+    public class ComicSelection
+    {
+        public string? Selection { get; set; }
+        public List<string> ComicUniverses { get; set; } = new List<string>
+        {
+            "DC",
+            "Marvel",
+            "Image",
+            "Dark Horse"
+        };
+    }
+
+    private string message = "";
+
+    ComicSelection comicSelection = new ComicSelection();
+
+    Superhero model = new Superhero
+    {
+        Name = "Toreboss",
+        SpecialAbility = "InstantFreeze"
+    };
+
+    private EditContext? heroEditContext;
+
+    private void OnInputFileChanged(InputFileChangeEventArgs eventArgs)
+    {
+        foreach (var f in eventArgs.GetMultipleFiles())
+        {
+            Console.WriteLine($"File name: {f.Name}");
+            Console.WriteLine($"File size: {f.Size}");
+            Console.WriteLine($"File content type: {f.ContentType}");
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        heroEditContext = new EditContext(model);
+    }
+
+    private void OnInvalidSubmit(EditContext editContext)
+    {
+        // Handle invalid form submission logic here
+    }
+
+    // private void OnSubmit(EditContext editContext)
+    // {
+
+    // }
+
+    private void OnValidSubmit(EditContext editContext)
+    {
+        Console.WriteLine("Submit");
+        FieldIdentifier fieldIdentifier = editContext.Field(nameof(Superhero.Name));
+        Console.WriteLine($"IsValid field {nameof(Superhero.Name)}: {editContext.IsValid(fieldIdentifier)}");
+        Console.WriteLine($"IsModeified field {nameof(Superhero.Name)}: {editContext.IsModified(fieldIdentifier)}");
+        editContext.MarkAsUnmodified();
+
+        // Save the data
+        message = $"You just submitted {model.Name}, who has ability {model.SpecialAbility}";
+
+    }
+
+
+}

@@ -1,0 +1,29 @@
+﻿@using System.Linq.Expressions
+
+<div class="mb-3 form-group">
+    @if (Label != null)
+    {
+        <label for="@Id" class="form-label">@Label</label>
+    }
+    <InputText class="form-control" Value="@Value" ValueChanged="ValueChanged" ValueExpression="@ValueExpression" />
+    <ValidationMessage class="text-danger" For="ValueExpression"></ValidationMessage>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = Guid.NewGuid().ToString();
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> ValueChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<string?>>? ValueExpression { get; set; }
+
+}

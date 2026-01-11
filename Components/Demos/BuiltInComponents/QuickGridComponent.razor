@@ -1,0 +1,68 @@
+﻿@using DependencyInjectionDemo.Components.Demos.BuiltInComponents.Sampledata
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+@page "/QuickGridComponentDemo"
+
+<PageTitle>QuickGrid component Demo</PageTitle>
+
+<HeadContent>
+    <meta name="somemetatag" content="This is a meta tag value let's test it out! Using the HeadContent in Blazor" />
+</HeadContent>
+
+<h3>QuickgridComponent</h3>
+
+<QuickGrid TGridItem="Superhero" Items="filteredHeroes" Pagination="@pagination">
+    <PropertyColumn Property="c => c.Id" Sortable="true" />
+    <PropertyColumn Property="c => c.Name" Sortable="true">
+        <ColumnOptions>
+            <input type="search" @bind="nameFilter" placeholder="Filter by name" />
+            <button class="clear-btn" @onclick="ClearNameFilter" title="Clear name filter">
+                <i class="fas fa-times"></i>
+            </button>
+        </ColumnOptions>
+    </PropertyColumn>
+    <PropertyColumn Property="c => c.SpecialAbility" Sortable="true">
+        <ColumnOptions>
+            <input type="search" @bind="abilityFilter" placeholder="Filter by name" />
+            <button class="clear-btn" @onclick="ClearAbilityFilter" title="Clear ability filter">
+                <i class="fas fa-times"></i>
+            </button>
+        </ColumnOptions>
+    </PropertyColumn>
+</QuickGrid>
+
+<Paginator State="@pagination" />
+
+
+@code {
+
+    string nameFilter = string.Empty;
+    string abilityFilter = string.Empty;
+
+    private void ClearNameFilter() {
+        ResetFilters();
+    }
+    private void ClearAbilityFilter()
+    {
+        ResetFilters();
+    }
+
+    private void ResetFilters()
+    {
+        nameFilter = string.Empty;
+        abilityFilter = string.Empty;
+    }
+
+    PaginationState pagination = new PaginationState { ItemsPerPage = 15 };
+
+    IQueryable<Superhero>? items;
+
+    IQueryable<Superhero>? filteredHeroes => items?.Where(h => h.Name.Contains(nameFilter, StringComparison.OrdinalIgnoreCase)
+     && h.SpecialAbility.Contains(abilityFilter, StringComparison.OrdinalIgnoreCase));
+
+    protected async override Task OnInitializedAsync()
+    {
+        items = (await new SuperheroRepository().GetSuperheroes()).AsQueryable();
+    }
+       
+}
