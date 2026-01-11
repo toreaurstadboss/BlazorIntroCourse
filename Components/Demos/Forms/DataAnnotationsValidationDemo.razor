@@ -1,0 +1,79 @@
+﻿<h3>DataAnnotationsValidationDemo</h3>
+
+@page "/EditFormDemo"
+@using DependencyInjectionDemo.Components.Demos.BuiltInComponents.Sampledata
+
+@* <EditForm Model="@model">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <InputText @bind-Value="@model.Name" />
+        <ValidationMessage For="@(() => model.Name)" />
+    </div>
+
+    <div class="form-group">
+        <label for="SpecialAbility">Special ability:</label>
+        <InputText @bind-Value="@model.SpecialAbility" />
+        <ValidationMessage For="@(() => model.SpecialAbility)" />
+    </div>  
+
+</EditForm> *@
+
+<EditForm EditContext="@heroEditContext" OnInvalidSubmit="@OnInvalidSubmit"
+          OnValidSubmit="@OnValidSubmit" class="p-4 border rounded shadow-sm bg-light">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label class="form-label" for="username">Username:</label>
+        <InputText class="form-control" @bind-Value="@model.Name" />
+        <ValidationMessage For="@(() => model.Name)" />
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="SpecialAbility">Special ability:</label>
+        <InputText class="form-control" @bind-Value="@model.SpecialAbility" />
+        <ValidationMessage For="@(() => model.SpecialAbility)" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary w-20">Submit</button>
+</EditForm>
+
+@code {
+
+    Superhero model = new Superhero
+    {
+        Name = "Toreboss",
+        SpecialAbility = "InstantFreeze"
+    };
+
+    private EditContext? heroEditContext;
+
+    protected override void OnInitialized()
+    {
+        heroEditContext = new EditContext(model);
+    }
+
+    private void OnInvalidSubmit(EditContext editContext)
+    {
+        // Handle invalid form submission logic here
+    }
+
+    // private void OnSubmit(EditContext editContext)
+    // {
+
+    // }
+
+    private void OnValidSubmit(EditContext editContext)
+    {
+        Console.WriteLine("Submit");
+        FieldIdentifier fieldIdentifier = editContext.Field(nameof(Superhero.Name));
+        Console.WriteLine($"IsValid field {nameof(Superhero.Name)}: {editContext.IsValid(fieldIdentifier)}");
+        Console.WriteLine($"IsModeified field {nameof(Superhero.Name)}: {editContext.IsModified(fieldIdentifier)}");
+        editContext.MarkAsUnmodified();
+    }
+
+
+}
