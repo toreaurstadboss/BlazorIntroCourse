@@ -1,11 +1,12 @@
 ﻿@using System.Linq.Expressions
 
-<div class="mb-3">
+<div class="mb-3 form-group">
     @if (Label != null)
     {
         <label for="@Id" class="form-label">@Label</label>
     }
     <InputText class="form-control" Value="@Value" ValueChanged="ValueChanged" ValueExpression="@ValueExpression" />
+    <ValidationMessage class="text-danger" For="ValueExpression"></ValidationMessage>
 </div>
 
 @code {

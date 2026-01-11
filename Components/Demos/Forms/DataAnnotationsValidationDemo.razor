@@ -26,11 +26,14 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
+    <SomeAcmeInputText @bind-Value="@model.Name" Label="Name" ></SomeAcmeInputText>
+
+@* 
     <div class="form-group">
         <label class="form-label" for="username">Username:</label>
         <InputText class="form-control" @bind-Value="@model.Name" />
         <ValidationMessage For="@(() => model.Name)" />
-    </div>
+    </div> *@
 
     <div class="form-group">
         <label class="form-label" for="SpecialAbility">Special ability:</label>
