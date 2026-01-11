@@ -52,8 +52,19 @@
 
     <div class="form-group">
         <label class="form-label" for="CreationDate">CreationDate:</label>
-        <InputFile class="form-control w-25" multiple OnChange="@OnInputFileChanged"  />
+        <InputFile class="form-control w-25" multiple OnChange="@OnInputFileChanged" />
         <ValidationMessage For="@(() => model.CreationDate)" />
+    </div>
+
+    <div class="form-group">
+        <InputRadioGroup @bind-Value="@comicSelection.Selection">
+            <h3>Select your favorite comic universe:</h3>
+            @foreach (var universe in comicSelection.ComicUniverses)
+            {
+                  <InputRadio Value="@universe" /> @universe <br />         
+            }
+        </InputRadioGroup>
+
     </div>
 
 
@@ -62,6 +73,20 @@
 </EditForm>
 
 @code {
+
+    public class ComicSelection
+    {
+        public string? Selection { get; set; }
+        public List<string> ComicUniverses { get; set; } = new List<string>
+        {
+            "DC",
+            "Marvel",
+            "Image",
+            "Dark Horse"
+        };
+    }
+
+    ComicSelection comicSelection = new ComicSelection();
 
     Superhero model = new Superhero
     {
@@ -77,7 +102,7 @@
         {
             Console.WriteLine($"File name: {f.Name}");
             Console.WriteLine($"File size: {f.Size}");
-            Console.WriteLine($"File content type: {f.ContentType}");           
+            Console.WriteLine($"File content type: {f.ContentType}");
         }
     }
 
