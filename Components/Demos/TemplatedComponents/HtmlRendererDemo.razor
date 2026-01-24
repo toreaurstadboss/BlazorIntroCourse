@@ -1,0 +1,40 @@
+﻿@page "/htmlrendererdemo"
+
+
+<h3>HtmlRendererDemo</h3>
+
+@((MarkupString)html)
+
+@code {
+
+    [Inject] IServiceProvider ServiceProvider { get; set; } = default!;
+    [Inject] ILoggerFactory LoggerFactory { get; set; } = default!;
+
+
+
+    string html = string.Empty;
+
+    protected async override Task OnInitializedAsync()
+    {
+        using var htmlRenderer = new HtmlRenderer(ServiceProvider, LoggerFactory);
+
+        html = await htmlRenderer.Dispatcher.InvokeAsync((async () =>
+        {
+            RenderFragment sampleContent =@<textarea>My sample code here</textarea>;
+
+            Dictionary<string, object?> dictionary = new Dictionary<string, object?>
+            {
+                {"ChildContent", sampleContent },
+                {"AlertType", AlertTypeEnum.Danger }
+            };
+            ParameterView parameters = ParameterView.FromDictionary(dictionary);
+            var output = await htmlRenderer.RenderComponentAsync<Alert>(parameters);
+            return output.ToHtmlString();
+        }));
+
+
+    }
+
+
+
+}
