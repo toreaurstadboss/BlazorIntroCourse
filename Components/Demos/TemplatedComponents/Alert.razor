@@ -1,4 +1,10 @@
-﻿<div class=@($"alert alert-{AlertType.ToString().ToLower()}") role="alert">
+﻿<div 
+    class=@($"alert {(IsDismissable ? "alert-dismissible fade show" : "")} alert-{AlertType.ToString().ToLower()}")
+    role="alert">
+    @if (IsDismissable)
+    {
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    }
     @ChildContent
 </div>
 
@@ -6,6 +12,9 @@
 
     [Parameter]
     public required RenderFragment ChildContent { get; set; } = @<b>Default message</b>;
+
+    [Parameter]
+    public bool IsDismissable { get; set; }
 
     [Parameter]
     public AlertTypeEnum AlertType { get; set; } = AlertTypeEnum.Success;

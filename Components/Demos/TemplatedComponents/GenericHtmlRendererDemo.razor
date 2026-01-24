@@ -1,0 +1,48 @@
+﻿@page "/GenericHtmlRendererDemo"
+
+<h3>GenericHtmlRendererDemo - Dynamic Alert rendering</h3>
+
+
+<h6>Here the parameters are set in code</h6>
+<GenericHtmlRenderer TComponent="Alert"
+                     ChildContent="alertContent"
+                     Parameters="alternateAlertParameters" />
+
+
+<h6>Here we use the ChildContent element to enter in the html</h6>
+<GenericHtmlRenderer TComponent="Alert"
+                     Parameters="alertParameters">
+    <ChildContent>
+        <text>This is the second alert</text>
+    </ChildContent>                 
+</GenericHtmlRenderer>
+
+<h6>Here we use inline object initializer for parameters</h6>
+<GenericHtmlRenderer TComponent="Alert"
+                     Parameters="@(new Dictionary<string, object>{
+    [ "AlertType" ] = AlertTypeEnum.Danger,
+    [ "IsDismissable" ] = true
+})">
+    <ChildContent>
+        <text>This is the third alert</text>
+    </ChildContent>  
+</GenericHtmlRenderer>
+
+
+
+@code {
+
+    private RenderFragment alertContent = @<text>This is the first Alert</text>;
+    Dictionary<string, object?> alertParameters = new()
+    {
+        { "AlertType", AlertTypeEnum.Info}, 
+        { "IsDismissable", true }
+    };
+
+     Dictionary<string, object?> alternateAlertParameters = new()
+    {
+        { "AlertType", AlertTypeEnum.Success }, 
+        { "IsDismissable", true }
+    };
+
+}

@@ -1,0 +1,43 @@
+﻿@((MarkupString)RenderedHtml)
+
+@typeparam TComponent
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public Dictionary<string, object?> Parameters { get; set; } = new();
+
+    [Inject] IServiceProvider ServiceProvider { get; set; } = default!;
+    [Inject] ILoggerFactory LoggerFactory { get; set; } = default!;
+
+    private string RenderedHtml { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ChildContent != null)
+        {
+            Parameters["ChildContent"] = ChildContent;
+        }
+
+        RenderedHtml = await RenderComponentAsync(Parameters);
+    }
+
+    private async Task<string> RenderComponentAsync(Dictionary<string, object?> parameters)
+    {
+
+        if (!typeof(IComponent).IsAssignableFrom(typeof(TComponent)))
+        {
+            throw new InvalidOperationException($"{typeof(TComponent).Name} is not a valid Blazor component.");
+        }
+
+        using var htmlRenderer = new HtmlRenderer(ServiceProvider, LoggerFactory);
+        var parameterView = ParameterView.FromDictionary(parameters);
+
+        var html = await htmlRenderer.Dispatcher.InvokeAsync(async () =>
+        {
+            var result = await htmlRenderer.RenderComponentAsync(typeof(TComponent), parameterView);
+            return result.ToHtmlString();
+        });
+
+        return html;
+    }
+}
