@@ -29,6 +29,27 @@
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
+        },
+        {
+            "name": ".NET Core Watch (Hot Reload)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "kill-process",
+            "postDebugTask": "kill-process",
+            "program": "${workspaceFolder}/bin/Debug/net10.0/DependencyInjectionDemo.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceLanguages": [
+                "csharp"
+            ]
         }
     ]
 }

@@ -2,6 +2,19 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "kill-process",
+            "command": "powershell",
+            "type": "shell",
+            "args": [
+                "-Command",
+                "Get-Process -Name dotnet -ErrorAction SilentlyContinue | Stop-Process -Force"
+            ],
+            "isBackground": false,
+            "presentation": {
+                "reveal": "silent"
+            }
+        },
+        {
             "label": "build",
             "command": "dotnet",
             "type": "process",
@@ -44,6 +57,29 @@
             "problemMatcher": "$msCompile",
             "group": {
                 "kind": "build"
+            }
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "--project",
+                "${workspaceFolder}/DependencyInjectionDemo.csproj",
+                "run"
+            ],
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": "$msCompile",
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^dotnet watch",
+                    "endsPattern": "^Now listening on:"
+                }
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
             }
         }
     ]
