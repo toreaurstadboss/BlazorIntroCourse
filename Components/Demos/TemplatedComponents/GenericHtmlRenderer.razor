@@ -1,4 +1,5 @@
-﻿@((MarkupString)RenderedHtml)
+﻿@using System.Reflection
+@((MarkupString)RenderedHtml)
 
 @typeparam TComponent
 
@@ -30,7 +31,10 @@
         }
 
         using var htmlRenderer = new HtmlRenderer(ServiceProvider, LoggerFactory);
-        var parameterView = ParameterView.FromDictionary(parameters);
+
+        var filteredParameters = GetValidParameters(parameters);
+
+        var parameterView = ParameterView.FromDictionary(filteredParameters);
 
         var html = await htmlRenderer.Dispatcher.InvokeAsync(async () =>
         {
@@ -40,4 +44,29 @@
 
         return html;
     }
+
+    private Dictionary<string, object?> GetValidParameters(Dictionary<string, object?> parameters)
+    {
+        var validnames = typeof(TComponent).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Where(p => p.IsDefined(typeof(ParameterAttribute), true))
+            .Select(p => p.Name)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);   
+        validnames.Add("ChildContent");
+
+        var filteredParameters = parameters
+            .Where(kvp => validnames.Contains(kvp.Key))
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+        var unknownKeys = parameters.Keys.Except(filteredParameters.Keys, StringComparer.OrdinalIgnoreCase).ToList();
+        if (unknownKeys.Count > 0)
+        {
+            var logger = LoggerFactory.CreateLogger("GenericHtmlRenderer");
+            string warningmsg = $"Dropped unknown component parameters for {typeof(TComponent).FullName}: {string.Join(",", unknownKeys)}";
+            logger.LogWarning(warningmsg);
+            Console.WriteLine(warningmsg);
+        }
+
+        return filteredParameters;
+    }
+
 }

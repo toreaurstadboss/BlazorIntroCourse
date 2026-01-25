@@ -1,5 +1,7 @@
 ﻿@page "/GenericHtmlRendererDemo"
 
+@using DependencyInjectionDemo.Components.Demos.TemplatedComponents
+
 <h3>GenericHtmlRendererDemo - Dynamic Alert rendering</h3>
 
 
@@ -20,8 +22,9 @@
 <h6>Here we use inline object initializer for parameters</h6>
 <GenericHtmlRenderer TComponent="Alert"
                      Parameters="@(new Dictionary<string, object>{
-    [ "AlertType" ] = AlertTypeEnum.Danger,
-    [ "IsDismissable" ] = true
+    [ "AlertType" ] = AlertTypeEnum.Warning,
+    [ "IsDismissable" ] = true,
+    [ "TestNonExistingComponentParameter"] = "foo"
 })">
     <ChildContent>
         <text>This is the third alert</text>
