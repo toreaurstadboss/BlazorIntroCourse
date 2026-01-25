@@ -62,7 +62,7 @@
         {
             "label": "watch",
             "command": "dotnet",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "watch",
                 "--project",
@@ -77,9 +77,6 @@
                     "beginsPattern": "^dotnet watch",
                     "endsPattern": "^Now listening on:"
                 }
-            },
-            "runOptions": {
-                "runOn": "folderOpen"
             }
         }
     ]
