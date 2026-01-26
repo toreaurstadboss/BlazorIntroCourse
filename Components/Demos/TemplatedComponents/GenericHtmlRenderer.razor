@@ -1,4 +1,6 @@
 ﻿@using System.Reflection
+@using System.ComponentModel
+@using Microsoft.AspNetCore.Components
 @((MarkupString)RenderedHtml)
 
 @typeparam TComponent
@@ -25,7 +27,7 @@
     private async Task<string> RenderComponentAsync(Dictionary<string, object?> parameters)
     {
 
-        if (!typeof(IComponent).IsAssignableFrom(typeof(TComponent)))
+        if (!typeof(Microsoft.AspNetCore.Components.IComponent).IsAssignableFrom(typeof(TComponent)))
         {
             throw new InvalidOperationException($"{typeof(TComponent).Name} is not a valid Blazor component.");
         }
@@ -45,28 +47,85 @@
         return html;
     }
 
+
     private Dictionary<string, object?> GetValidParameters(Dictionary<string, object?> parameters)
     {
-        var validnames = typeof(TComponent).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        var componentType = typeof(TComponent);
+
+        // Get valid property names and their PropertyInfo
+        var validProperties = componentType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(p => p.IsDefined(typeof(ParameterAttribute), true))
-            .Select(p => p.Name)
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);   
-        validnames.Add("ChildContent");
+            .ToDictionary(p => p.Name, p => p, StringComparer.OrdinalIgnoreCase);
 
-        var filteredParameters = parameters
-            .Where(kvp => validnames.Contains(kvp.Key))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        // Add ChildContent as a special case
+        validProperties["ChildContent"] = null!;
 
+        var filteredParameters = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var kvp in parameters)
+        {
+            if (validProperties.ContainsKey(kvp.Key))
+            {
+                var propertyInfo = validProperties[kvp.Key];
+
+                if (propertyInfo != null)
+                {
+                    var targetType = propertyInfo.PropertyType;
+                    var value = kvp.Value;
+
+                    // Check if value is null or already assignable
+                    if (value == null || targetType.IsInstanceOfType(value))
+                    {
+                        filteredParameters[kvp.Key] = value;
+                    }
+                    else
+                    {
+                        // Use TypeDescriptor to check conversion
+                        var converter = TypeDescriptor.GetConverter(targetType);
+                        if (converter != null && converter.CanConvertFrom(value.GetType()))
+                        {
+                            try
+                            {
+                                filteredParameters[kvp.Key] = converter.ConvertFrom(value);
+                            }
+                            catch
+                            {
+                                LogConversionWarning(kvp.Key, value);
+                            }
+                        }
+                        else
+                        {
+                            LogConversionWarning(kvp.Key, value);
+                        }
+                    }
+                }
+                else
+                {
+                    // ChildContent or other special cases
+                    filteredParameters[kvp.Key] = kvp.Value;
+                }
+            }
+        }
+
+        // Log unknown keys
         var unknownKeys = parameters.Keys.Except(filteredParameters.Keys, StringComparer.OrdinalIgnoreCase).ToList();
         if (unknownKeys.Count > 0)
         {
             var logger = LoggerFactory.CreateLogger("GenericHtmlRenderer");
-            string warningmsg = $"Dropped unknown component parameters for {typeof(TComponent).FullName}: {string.Join(",", unknownKeys)}";
+            string warningmsg = $"Dropped unknown component parameters for {componentType.FullName}: {string.Join(",", unknownKeys)}";
             logger.LogWarning(warningmsg);
             Console.WriteLine(warningmsg);
         }
 
         return filteredParameters;
+    }
+
+    private void LogConversionWarning(string key, object value)
+    {
+        var logger = LoggerFactory.CreateLogger("GenericHtmlRenderer");
+        string warningmsg = $"Parameter '{key}' with value '{value}' could not be converted to the expected type.";
+        logger.LogWarning(warningmsg);
+        Console.WriteLine(warningmsg);
     }
 
 }
