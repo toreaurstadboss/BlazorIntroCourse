@@ -1,0 +1,41 @@
+﻿@page "/JsToReferenceNetDemo"
+@implements IDisposable
+
+<h3>JsToReferenceNet</h3>
+
+<button class="btn btn-success" @onclick="TriggerDotNetInstanceMethod">Click me</button>
+
+<span style="">@result</span>
+
+@code {
+
+
+    private DotNetObjectReference<JsToReferenceNet>? dotNetHelper;
+
+    [Inject] IJSRuntime js { get; set; } = default!;
+
+    IJSObjectReference jsModule = default!;
+
+    private string? result;
+
+    protected async override Task OnInitializedAsync()
+    {
+        jsModule = await js.InvokeAsync<IJSObjectReference>("import", "/Components/Demos/Javascript/Components/JsToReferenceNet.razor.js");
+        dotNetHelper = DotNetObjectReference.Create(this);
+    }
+
+    public async Task TriggerDotNetInstanceMethod()
+    {
+        result = await jsModule.InvokeAsync<string>("callreferencenetfromjs", dotNetHelper);
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public string GetHelloMessage(string name) => $"Hello, {name} it {DateTime.Now.ToShortTimeString()}";
+
+    public void Dispose()
+    {
+        dotNetHelper?.Dispose();
+    }
+
+}
