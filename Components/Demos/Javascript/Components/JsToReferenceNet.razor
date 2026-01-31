@@ -3,9 +3,15 @@
 
 <h3>JsToReferenceNet</h3>
 
-<button class="btn btn-success" @onclick="TriggerDotNetInstanceMethod">Click me</button>
+<button class="btn btn-success" @onclick="TriggerDotNetInstanceMethod">Click me (instance method)</button>
+
+
+<button class="btn btn-success" onclick="callnetfromjs()">Click me (static method)</button>
+
 
 <span style="">@result</span>
+
+<span id="StaticResultId" style="font-family: 'Comic Sans MS',Verdana, Geneva, Tahoma, sans-serif"</span>
 
 @code {
 
@@ -31,7 +37,13 @@
     }
 
     [JSInvokable]
-    public string GetHelloMessage(string name) => $"Hello, {name} it {DateTime.Now.ToShortTimeString()}";
+    public string GetHelloMessage(string name) => $"Hello, {name} it {DateTime.Now.ToString("HH:mm:ss")}";
+
+    [JSInvokable("NameOfTheMethod")]
+    public static Task<string> GetAMessageFromNet()
+    {
+        return Task.FromResult($"<br />This is message from .NET {DateTime.Now.ToString("HH:mm:ss")}<br />");
+    }
 
     public void Dispose()
     {
