@@ -1,0 +1,36 @@
+﻿<button @onclick="OnBtnClickedAsync" @attributes="AdditionalParameters" class=@($"btn {(isConfirmed ? "btn-success" : "btn-secondary")}")>Click me!</button>
+
+@code {
+
+    [Inject] public IJSRuntime JsRunTime { get; set; } = default!;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalParameters { get; set; }
+
+    [Parameter]
+    public string? ConfirmMessage { get; set; }
+
+    [Parameter] 
+    public EventCallback<bool> OnClicked { get; set; }
+
+    private bool isConfirmed = false;
+    private bool isExecuting = false;
+
+    protected async Task OnBtnClickedAsync()
+    {
+        JsModule = await JsRunTime.InvokeAsync<IJSObjectReference>("import", "/Components/Demos/Javascript/Components/CustomButton.razor.js");
+        isConfirmed = await JsModule.InvokeAsync<bool>("ConfirmOperation", ConfirmMessage);
+        if (isExecuting)
+        {
+            return;
+        }
+        isExecuting = true;
+        await InvokeAsync(StateHasChanged);
+        await OnClicked.InvokeAsync(isConfirmed);
+
+        isExecuting = false;
+    }
+
+    private IJSObjectReference JsModule = default!;
+
+}

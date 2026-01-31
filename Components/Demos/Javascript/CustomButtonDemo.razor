@@ -1,0 +1,21 @@
+﻿@page "/ConfirmButtonDemo"
+@using DependencyInjectionDemo.Components.Demos.Javascript.Components
+
+<h3>CustomButtonDemo</h3>
+
+<CustomButton OnClicked="OnClickedAsync" ConfirmMessage="Are you sure?" />
+
+<span>Is confirmed?</span>
+<InputCheckbox @bind-Value="IsConfirmed" disabled />
+
+@code {
+
+    private bool IsConfirmed { get; set; } = false;
+
+
+    private async Task OnClickedAsync(bool isConfirmed)
+    {
+        IsConfirmed = isConfirmed;
+    }
+
+}
