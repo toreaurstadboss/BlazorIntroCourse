@@ -1,0 +1,52 @@
+<div class="modal-backdrop @(_visible ? "show" : "")" style="display:@(_visible ? "block" : "none")"></div>
+
+<div class="modal @(_visible ? "show" : "")" tabindex="-1" style="display:@(_visible ? "block" : "none")">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>@Title
+                </h5>
+            </div>
+            <div class="modal-body">
+                <p>@Message</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" @onclick="Cancel">
+                    <i class="bi bi-x-circle me-1"></i> Stay on page
+                </button>
+                <button class="btn btn-green" @onclick="Confirm">
+                    <i class="bi bi-arrow-right-circle me-1"></i> Leave page
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "Unsaved Changes";
+    [Parameter] public string Message { get; set; } = "Are you sure you want to leave this page?";
+
+    private bool _visible;
+    private TaskCompletionSource<bool>? _tcs;
+
+    public Task<bool> ShowAsync()
+    {
+        _tcs = new TaskCompletionSource<bool>();
+        _visible = true;
+        StateHasChanged();
+        return _tcs.Task;
+    }
+
+    private void Confirm()
+    {
+        _visible = false;
+        _tcs?.TrySetResult(true);
+    }
+
+    private void Cancel()
+    {
+        _visible = false;
+        _tcs?.TrySetResult(false);
+    }
+}

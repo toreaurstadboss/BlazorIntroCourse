@@ -1,21 +1,43 @@
 ﻿@page "/NavigationLockdemo"
-@inject IJSRuntime JsRunTime
+@using DependencyInjectionDemo.Components.Shared
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavManager
 
 <h3>NavigationLockDemo</h3>
 
-<NavigationLock ConfirmExternalNavigation="true" OnBeforeInternalNavigation="OnBeforeInternalNaviation" />
+<NavigationLock ConfirmExternalNavigation="false" OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
 
-<a href="https://www.dagbladet.no">Ekstern lenke - Dagbladet</a>
+<ConfirmModal
+    @ref="_modal"    
+    Title="Leave this page?"
+    Message="You have unsaved changes. Are you sure you want to navigate away?" />
+
+
+<p>Try navigating away using the links below:</p>
+<a href="/">Go to Home (internal)</a>
+<br />
+<a href="#" @onclick="@(() => OnExternalLinkClick("https://www.dagbladet.no"))" @onclick:preventDefault>Ekstern lenke - Dagbladet (external)</a>
+<br />
+<a href="#" @onclick="@(() => OnExternalLinkClick("https://www.vg.no"))" @onclick:preventDefault>Ekstern lenke - VG (external)</a>
 
 @code {
+    private ConfirmModal _modal = default!;
 
-    private async Task OnBeforeInternalNaviation(LocationChangingContext ctx)
+    private async Task OnBeforeInternalNavigation(LocationChangingContext ctx)
     {
-        bool isConfirmed = await JsRunTime.InvokeAsync<bool>("confirm", "Are you sure you want to navigate away from this page?"); 
-        if (!isConfirmed)
+        bool confirmed = await _modal.ShowAsync();
+        if (!confirmed)
         {
             ctx.PreventNavigation();
-        }   
+        }
     }
 
+    private async Task OnExternalLinkClick(string url)
+    {
+        bool confirmed = await _modal.ShowAsync();
+        if (confirmed)
+        {
+            await JsRuntime.InvokeVoidAsync("open", url, "_blank");
+        }
+    }
 }
