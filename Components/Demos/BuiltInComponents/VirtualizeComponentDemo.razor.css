@@ -3,33 +3,37 @@ h3 {
 }
 
 .table-container {
-    height: 500px;
+    height: calc(100vh - 3.5rem - 5rem); /* viewport minus top-row minus h3+margin */
     overflow-y: auto;
-    scrollbar-width: thin;           /* Firefox */
-    scrollbar-color: #6c757d #dee2e6; /* Firefox: thumb track */
 }
 
-/* Chromium (Chrome, Edge) */
+/* Edge / Chrome (Chromium) */
 .table-container::-webkit-scrollbar {
-    width: 30px !important;
+    width: 20px; /* controls the track+thumb width */
 }
 
 .table-container::-webkit-scrollbar-track {
-    background: #dee2e6;
-    border-radius: 6px;
-}
+    background: #cfe2ff;
+    border-radius: 10px;
+}       
 
 .table-container::-webkit-scrollbar-thumb {
-    background-color: #6c757d;
-    border-radius: 6px;
-    border: 2px solid #dee2e6;
-    width: 30px;
-
-    min-height: 60px;  /* prevents the thumb from becoming too small */
+    background-color: #0d6efd;
+    border-radius: 10px;
+    border: 3px solid #cfe2ff; /* creates inset padding effect */
+    min-height: 60px;
 }
 
 .table-container::-webkit-scrollbar-thumb:hover {
-    background-color: #343a40;
+    background-color: #0a58ca;
+}
+
+/* Firefox fallback */
+@supports not selector(::-webkit-scrollbar) {
+    .table-container {
+        scrollbar-width: auto;
+        scrollbar-color: #0d6efd #cfe2ff;
+    }
 }
 
 table {
