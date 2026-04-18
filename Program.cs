@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using DependencyInjectionDemo.Data;
 using DependencyInjectionDemo.Components.Demos.StateManagement.Services;
+using DependencyInjectionDemo.Components.Demos.BuiltInComponents.Sampledata;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+
+builder.Services.AddScoped<Data>();
 
 builder.Services.AddSingleton<IMyService, MyService>();
 

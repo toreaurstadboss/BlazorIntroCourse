@@ -1,0 +1,40 @@
+﻿@page "/VirtualizeDemo"
+@using DependencyInjectionDemo.Components.Demos.BuiltInComponents.Sampledata
+
+@inject Data InputData
+
+<h3>VirtualizeComponentDemo</h3>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Special Ability</th>
+            </tr>
+        </thead>
+        <tbody>
+            <Virtualize ItemsProvider="@LoadSuperheroes" ItemSize="41" OverscanCount="5">
+                <tr>
+                    <td>@context.Id</td>
+                    <td>@context.Name</td>
+                    <td>@context.SpecialAbility</td>
+                </tr>
+            </Virtualize>
+        </tbody>
+    </table>
+</div>
+
+@code {
+
+    private async ValueTask<ItemsProviderResult<Superhero>> LoadSuperheroes(ItemsProviderRequest request)
+    {
+        var superheroes = await InputData.GetDataAsync(request.StartIndex, request.Count);
+        return new ItemsProviderResult<Superhero>(superheroes, InputData.GetDataCount);
+    }
+
+
+
+
+}
